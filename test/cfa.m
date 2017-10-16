@@ -3,11 +3,11 @@ clear all
 image = imread('DSC01079.jpg');
 imsize = size(image);
 
-%% DOWNSAMPLING
+%% Downsampling
 image_down = image(1:20:end, 1:20:end, :);
 imsize_down = size(image_down);
 
-%% BAYER CFA 
+%% Bayer CFA 
 % red = 1, blue = 2, green = 3
 
 p(1,1) = 2; p(1,2) = 3; p(2,1) = 3; p(2,2) = 1; 
@@ -30,11 +30,12 @@ imshow(CFA)
 
 image_sample = zeros(imsize_down(1), imsize_down(2), 3);
 for i=1:3
-    image_sample(:,:,i) = image_down(:,:,i).*CFA(:,:,i); 
+    image_sample(:,:,i) = uint8(image_down(:,:,i)).*uint8((CFA(:,:,i))); 
 end
-
-imshow(image_sample);
+imshow(image_sample/256);
  
+%% Interpolation
+
 
 
 

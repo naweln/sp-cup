@@ -4,14 +4,13 @@ image = imread('DSC01079.jpg');
 imsize = size(image);
 
 %% Downsampling
-image_down = image(1:20:end, 1:20:end, :);
+image_down = image(1:5:end, 1:5:end, :);
 imsize_down = size(image_down);
 
 %% Bayer CFA 
-% red = 1, blue = 2, green = 3
+% red = 1, green = 2, blue = 3
 
-p(1,1) = 2; p(1,2) = 3; p(2,1) = 3; p(2,2) = 1; 
-
+p = [3 2; 2 1];
 P = zeros(size(p,1), size(p,2), 3);
 for m=1:3
     i = find(p == m); 
@@ -24,7 +23,7 @@ end
 r = imsize_down(1)/length(p);
 c = imsize_down(2)/length(p);
 CFA = repmat(P,r,c,1);
-imshow(CFA)
+%imshow(CFA)
 
 %% CFA Sampling
 
@@ -32,9 +31,82 @@ image_sample = zeros(imsize_down(1), imsize_down(2), 3);
 for i=1:3
     image_sample(:,:,i) = uint8(image_down(:,:,i)).*uint8((CFA(:,:,i))); 
 end
-imshow(image_sample/256);
+image_sample = uint8(image_sample);
+%imshow(image_sample);
  
 %% Interpolation
+
+h(:,:,1) = [1 2 1; 2 4 2; 1 2 1]./4;
+h(:,:,2) = [0 1 0; 1 4 1; 0 1 0]./4;
+h(:,:,3) = h(:,:,1);
+
+image_interp = zeros(imsize_down(1), imsize_down(2), 3);
+
+for i=1:3
+   image_interp(:,:,i) = imfilter(image_sample(:,:,i), h(:,:,i)); 
+end
+
+%imshow(image_interp/256);
+
+%% Interpolation Coeffiecients (for small test image - impossible for large image > 100x100)
+% solve system Ax = b
+% -- A 3x3 submatrix of interpolated image,
+% -- x interpolation coefficients
+% -- b known CFA samples
+
+step = 170;
+
+image_sample_small = image_sample(1:step, 1:step, :);
+for color=1:3
+    for col = 2:size(image_sample_small,2)-1
+        for row = 2:size(image_sample_small,1)-1
+            temp = image_sample_small(row-1:row+1, col-1:col+1, color)';
+            A((row-1)+(step-2)*(col-2),:,color) = temp(:);
+        end
+    end
+end
+
+
+image_interp_small = image_interp(1:step, 1:step, :);
+for color=1:3
+   temp = image_interp_small(2:end-1,2:end-1,color)'; 
+   b(:,color) = temp(:);
+end
+
+%% Solving the equation (using SVD doesn't work yet)
+
+% for color = 1:3
+%     combined = [A(:,:,color) b(:,color)];
+%     [U,S,Vs] = svd(double(combined));
+%     V=Vs';
+%     x(:,color) = -V(:,end)./V(end,end);
+% end
+
+%% Solving the equation improv (least squares)
+
+A = double(A);
+for color = 1:3
+   x_leastsquare(:,color) = (A(:,:,color)'*A(:,:,color))\A(:,:,color)'*b(:,color); 
+end
+
+%% makeshift interpolation leastsquare
+
+x_mat = zeros(3,3,3);
+for color=1:3
+    x_mat(:,:,color) = reshape(x_leastsquare(:,color), [3, 3])';
+end
+
+for i=1:3
+   image_interp_leastsquare(:,:,i) = imfilter(image_sample(:,:,i), x_mat(:,:,i)); 
+end
+
+%% error between bilinear interpolated image and estimated filter using least squares
+
+imshow(abs(double(image_interp_leastsquare)-double(image_interp))/256)
+
+
+
+
 
 
 

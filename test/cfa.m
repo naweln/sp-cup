@@ -5,6 +5,7 @@ imsize = size(image);
 
 %% DOWNSAMPLING
 image_down = image(1:20:end, 1:20:end, :);
+imsize_down = size(image_down);
 
 %% BAYER CFA 
 % red = 1, blue = 2, green = 3
@@ -20,9 +21,21 @@ for m=1:3
     end 
 end
 
-r = imsize(1)/length(p);
-c = imsize(2)/length(p);
+r = imsize_down(1)/length(p);
+c = imsize_down(2)/length(p);
 CFA = repmat(P,r,c,1);
+imshow(CFA)
+
+%% CFA Sampling
+
+image_sample = zeros(imsize_down(1), imsize_down(2), 3);
+for i=1:3
+    image_sample(:,:,i) = image_down(:,:,i).*CFA(:,:,i); 
+end
+
+imshow(image_sample);
+ 
+
 
 
 

@@ -1,6 +1,6 @@
 clear all
 
-image = imread(path);
+image = imread('DSC01079.jpg');
 imsize = size(image);
 
 %% DOWNSAMPLING

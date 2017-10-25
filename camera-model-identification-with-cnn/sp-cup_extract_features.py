@@ -143,6 +143,10 @@ def main():
     print ('Evaluating classifier. . .')
     evaluate_model(clf, models, eval_data)
 
+    # Note that the training data was randomly shuffled, so evaluating it will as currently is, based on a previously
+    # stored clf is not very accurate since evaluation data might have been fed into the training one (new instance, new shuffle).
+    # Need to seprate training and evaluation data before hand for this, for example.
+
 
 
 

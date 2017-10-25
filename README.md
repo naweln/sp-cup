@@ -18,7 +18,7 @@ In essence they trained on a large data base of various camera models to identif
 
 In the ```camera-model-identification-with-cnn``` I have used their trained feature extractor to then train a SVM classifier based on our image data base.
 
-#### Technical details
+#### Technical detailse 
 
 Your data file (i.e. the file containing the various samples from the different models) should be located on the sp-cup root folder.
 Two methods have been added to extend the classifier to the competition. 
@@ -38,8 +38,7 @@ This second methods does the classification. It extracts the aforementioned feat
 
 A classifier has been pre-trained, so by running ```sp-cup_extract_features.py``` you can see the performance for that particular trained classifier.
 
-Sample performance:
-
+Note that for the sample classifier, ```SVM_classifier``` you first not to unzip it to use it.
 
 
 #### Note

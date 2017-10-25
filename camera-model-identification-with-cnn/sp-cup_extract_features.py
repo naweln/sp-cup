@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-First Steps Towards Camera Model Identification with Convolutional Neural Networks
-@author: Luca Bondi (luca.bondi@polimi.it)
+sp-cup
 """
 
 import os

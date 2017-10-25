@@ -36,13 +36,13 @@ sp-cup_extract_features.py
 This second methods does the classification. It extracts the aforementioned features to then train a classifier. It can also store the trained classifier (into the ```SVM_classifier``` folder).
 
 
-A classifier has been pre-trained, so by running sp-```cup_extract_features.py``` you can see the performance for that particular trained classifier.
+A classifier has been pre-trained, so by running ```sp-cup_extract_features.py``` you can see the performance for that particular trained classifier.
 
 Sample performance:
 
 
 
-####Note
+#### Note
 
 We need to ask permission to use a modified version of the code since they state that:
 

@@ -2,14 +2,15 @@ clear all
 
 %% Initialisation
 channel_len = 3; % RGB channel length.
-file_name = 'DSC01079.jpg';
+file_name = '../data-subset/18.jpg';
+image = double(imread(file_name));
 
 % Bayer CFA // red = 1, green = 2, blue = 3
 p = [3 2; 2 1];  
 % down sampling factor
 decimation_factor = 5; 
 % get raw sample from CFA p.
-raw_sample = generateRawSample(file_name, p, decimation_factor);
+raw_sample = buildRaw( p, image);
 
 % Filters
 filter_width = 3; 
@@ -54,7 +55,7 @@ for color = 1:channel_len
    x_leastsquare(:,color) = (A(:,:,color)'*A(:,:,color))\A(:,:,color)'*b(:,color); 
 end
 
-%% makeshift interpolation leastsquare
+%% interpolation leastsquare
 
 x_mat = zeros(filter_width,filter_width,channel_len);
 for color=1:channel_len

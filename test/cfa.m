@@ -43,20 +43,21 @@ h(:,:,3) = h(:,:,1);
 image_interp = zeros(imsize_down(1), imsize_down(2), 3);
 
 for i=1:3
-   image_interp(:,:,i) = imfilter(image_sample(:,:,i), h(:,:,i)); 
+   image_interp(:,:,i) = imfilter(image_sample(:,:,i), h(:,:,i), 'replicate'); 
+end
+
+for i=1:1
+   image_interp2(:,:,i) = conv2(double(image_sample(:,:,i)), double(h(:,:,i)));
 end
 
 %imshow(image_interp/256);
 
 %% Interpolation Coeffiecients (for small test image - impossible for large image > 100x100)
 % solve system Ax = b
-% -- A 3x3 submatrix of interpolated image,
-% -- x interpolation coefficients
-% -- b known CFA samples
 
-step = 170;
+step = 64;
 
-image_sample_small = image_sample(1:step, 1:step, :);
+image_sample_small = image_sample(2:step+1, 2:step+1, :);
 for color=1:3
     for col = 2:size(image_sample_small,2)-1
         for row = 2:size(image_sample_small,1)-1
@@ -67,7 +68,7 @@ for color=1:3
 end
 
 
-image_interp_small = image_interp(1:step, 1:step, :);
+image_interp_small = image_interp(2:step+1, 2:step+1, :);
 for color=1:3
    temp = image_interp_small(2:end-1,2:end-1,color)'; 
    b(:,color) = temp(:);
@@ -75,36 +76,52 @@ end
 
 %% Solving the equation (using SVD doesn't work yet)
 
-% for color = 1:3
-%     combined = [A(:,:,color) b(:,color)];
-%     [U,S,Vs] = svd(double(combined));
-%     V=Vs';
-%     x(:,color) = -V(:,end)./V(end,end);
-% end
+%% SVD
+for color = 1:3
+    combined = [A(:,:,color) b(:,color)];
+    [U,S,Vs] = svd(double(combined));
+    V=Vs';
+    x(:,color) = -V(:,end)./V(end,end);
+end
 
-%% Solving the equation improv (least squares)
+
+%% Solving the equation (least squares)
 
 A = double(A);
 for color = 1:3
    x_leastsquare(:,color) = (A(:,:,color)'*A(:,:,color))\A(:,:,color)'*b(:,color); 
 end
 
+% least square through SVD - it works
+% for color = 1:3
+%     [U,S,V] = svd(double(A(:,:,color)));
+%     x_svd(:,color) = (V*pinv(S)*U')*b(:,color);
+% end
+
 %% makeshift interpolation leastsquare
 
-x_mat = zeros(3,3,3);
+x_mat_svd = zeros(3,3,3);
 for color=1:3
-    x_mat(:,:,color) = reshape(x_leastsquare(:,color), [3, 3])';
+    x_mat_svd(:,:,color) = reshape(x_svd(:,color), [3, 3])';
+end
+
+x_mat_ls = zeros(3,3,3);
+for color=1:3
+    x_mat_ls(:,:,color) = reshape(x_leastsquare(:,color), [3, 3])';
 end
 
 for i=1:3
-   image_interp_leastsquare(:,:,i) = imfilter(image_sample(:,:,i), x_mat(:,:,i)); 
+   image_interp_est_svd(:,:,i) = imfilter(image_sample(:,:,i), x_mat_svd(:,:,i)); 
+end
+for i=1:3
+   image_interp_est_ls(:,:,i) = imfilter(image_sample(:,:,i), x_mat_ls(:,:,i)); 
 end
 
-%% error between bilinear interpolated image and estimated filter using least squares
+imshow(image_interp_est_svd);
+figure; imshow(abs(double(image_interp_est_svd)-double(image_interp))/256)
 
-imshow(abs(double(image_interp_leastsquare)-double(image_interp))/256)
 
-
+   
 
 
 

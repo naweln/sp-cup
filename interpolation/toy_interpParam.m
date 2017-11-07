@@ -32,23 +32,27 @@ end
 % where each row is a 3x3 block of raw sample. b interpolated corresponding
 % pixel, x interpolation coefficients.
 step = 8;
-
+filter_len = 3; % filter is of size 3x3
+offset = (filter_len-1)/2;
 % can add gaussian white noise to check robustness (LS does better than
 % SVD)
 % raw = raw + 8*randn(size(raw));
 raw_small = raw(1:step, 1:step, :);
+interp_small = image_interp(1:step, 1:step, :);
+width = size(raw_small,1);
+height = size(raw_small,2);
+
 for color = 1:nb_color 
-    for col = 2:size(raw_small,2)-1
-        for row = 2:size(raw_small,1)-1
+    for col = 1+offset:height-offset
+        for row = 1+offset:width-1
             tempA = raw_small(row-1:row+1, col-1:col+1, color);
-            A((row-1)+(step-2)*(col-2),:,color) = tempA(:);
+            A((row-offset)+(step-2*offset)*(col-offset-1),:,color) = tempA(:);
         end
     end
 end
 
-interp_small = image_interp(1:step, 1:step, :);
 for color = 1:nb_color 
-   tempb = interp_small(2:end-1,2:end-1,color); 
+   tempb = interp_small(1+offset:end-offset,1+offset:end-offset,color); 
    b(:,color) = tempb(:);
 end
 
@@ -59,7 +63,7 @@ for color = 1:nb_color
     x_svd(:,color) = -Vs(:,end)./Vs(end,end);
 end
 
-x_svd = reshape(x_svd(1:end-1,:), 3, 3, 3);
+x_svd = reshape(x_svd(1:end-1,:), filter_len, filter_len, nb_color);
 
 for i=1:nb_color
     image_interp_svd(:,:,i) = imfilter(raw(:,:,i), x_svd(:,:,i));
@@ -70,7 +74,7 @@ for color = 1:nb_color
    x_ls(:,color) = (A(:,:,color)'*A(:,:,color))\A(:,:,color)'*b(:,color); 
 end
 
-x_ls = reshape(x_ls, 3, 3, 3);
+x_ls = reshape(x_ls, filter_len, filter_len, nb_color);
 
 for i=1:nb_color
     image_interp_ls(:,:,i) = imfilter(raw(:,:,i), x_ls(:,:,i));

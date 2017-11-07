@@ -5,52 +5,36 @@ clear all;
 image = double(imread('../data-subset/26.jpg'));
 imsize = size(image);
 nb_color = 3;
+red = 1; blue = 2; green = 3;
 
-%% 
+%% gradient / regions
+threshold = 40; % threshold to be considered in a certain region
+regions = generateRegions(image, threshold);
+% regions: 1 = horizontal gradient, 2 = vertical gradient, 3 = smooth 
+
+%% generating A and b
 raw = generateRaw(patternCFA(1), image); %TODO implement other CFA patterns
-filter_len = 5; % filter is of size 7x7
-offset = (filter_len-1)/2;
-step = 40;
-raw_small = raw(1:step, 1:step, :);
-image_small = image(1:step, 1:step, :);
-width = size(raw_small,1);
-height = size(raw_small,2);
+filter_len = 3; % filter is of size filter_len x filter_len
+region_index = 1; % considering hor grad region to start, TODO change
 
+% Matrices A, b cannot include whole image, first must take sub images.
+step = 10;
+sub_image   = image  (step:2*step, step:2*step, :); % TODO change
+sub_raw     = raw    (step:2*step, step:2*step, :);
+sub_regions = regions(step:2*step, step:2*step, :);
 
-for color = 1:nb_color 
-    for col = 1+offset:height-offset
-        for row = 1+offset:width-offset
-            tempA = raw_small(row-offset:row+offset, col-offset:col+offset, color);
-            A((row-offset)+(width-2*offset)*(col-offset-1),:,color) = tempA(:);
-        end
-    end
-end
+[A_reg1_red, b_reg1_red] = generateAb(sub_image, sub_raw, sub_regions, region_index, red, filter_len);
 
-for color = 1:nb_color 
-   tempb = image_small(1+offset:end-offset,1+offset:end-offset,color); 
-   b(:,color) = tempb(:);
-end
-
+%% Solving Ax = b
 % Minimal solution to equation using SVD
-for color = 1:nb_color
-    combined = [A(:,:,color) b(:,color)];
+%for color = 1:nb_color
+    combined = [A_reg1_red b_reg1_red'];
     [U,S,Vs] = svd(double(combined));
-    x_svd(:,color) = -Vs(:,end)./Vs(end,end);
-end
+    x_svd_reg1_red = -Vs(:,end)./Vs(end,end);
+%end
 
-x_svd = reshape(x_svd(1:end-1,:), filter_len, filter_len, nb_color);
+x_svd_reg1_red = reshape(x_svd_reg1_red(1:end-1), filter_len, filter_len);
 
-for i=1:nb_color
-    image_interp_svd(:,:,i) = imfilter(raw(:,:,i), x_svd(:,:,i));
-end
+image_interp_svd_reg1_red = imfilter(raw(:,:,red), x_svd_reg1_red);
 
-% Minimal solution to equation using Least Squares
-for color = 1:nb_color
-   x_ls(:,color) = (A(:,:,color)'*A(:,:,color))\A(:,:,color)'*b(:,color); 
-end
 
-x_ls = reshape(x_ls, filter_len, filter_len, nb_color);
-
-for i=1:nb_color
-    image_interp_ls(:,:,i) = imfilter(raw(:,:,i), x_ls(:,:,i));
-end

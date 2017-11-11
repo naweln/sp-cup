@@ -31,8 +31,8 @@ end
 % finding interpolation coefficients by solving system Ax = b. A matrix
 % where each row is a 3x3 block of raw sample. b interpolated corresponding
 % pixel, x interpolation coefficients.
-step = 15;
-filter_len = 7; % filter is of size 3x3
+step = 20;
+filter_len = 3; % filter is of size 3x3
 offset = (filter_len-1)/2;
 % can add gaussian white noise to check robustness (LS does better than
 % SVD)

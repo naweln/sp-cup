@@ -20,10 +20,10 @@ offset = (filter_len-1)/2;
 region_index = 1; % considering hor grad region to start, TODO change
 
 % Matrices A, b cannot include whole image, first must take sub images.
-step = 50;
-sub_image   = image  (5*step:6*step, step:2*step, :);
-sub_raw     = raw    (5*step:6*step, step:2*step, :);
-sub_regions = regions(5*step:6*step, step:2*step, :);
+step = 150;
+sub_image   = image  (3:step, 3:step, :);
+sub_raw     = raw    (3:step, 3:step, :);
+sub_regions = regions(3:step, 3:step, :);
 
 A = cell(nb_color, nb_region);
 b = cell(nb_color, nb_region);
@@ -49,6 +49,8 @@ for i = 1:nb_color
 end
 
 %% Interpolation
+image_est_svd = interpolate(raw, regions, x_svd);
+image_est_ls  = interpolate(raw, regions, x_ls );
 
 
 

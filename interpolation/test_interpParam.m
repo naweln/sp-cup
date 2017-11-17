@@ -20,7 +20,7 @@ offset = (filter_len-1)/2;
 region_index = 1; % considering hor grad region to start, TODO change
 
 % Matrices A, b cannot include whole image, first must take sub images.
-step = 17;
+step = 50;
 sub_image   = image  (5*step:6*step, step:2*step, :);
 sub_raw     = raw    (5*step:6*step, step:2*step, :);
 sub_regions = regions(5*step:6*step, step:2*step, :);
@@ -42,8 +42,9 @@ x_ls  = cell(nb_color, nb_region);
 
 for i = 1:nb_color
     for j = 1:nb_region
-        x_svd{i,j} = solveAb(A{i,j}, b{i,j}, filter_len, 'svd');
+        if(empty_flag(i,j) == 1); continue; end;
         x_ls{i,j}  = solveAb(A{i,j}, b{i,j}, filter_len, 'ls');
+        x_svd{i,j} = solveAb(A{i,j}, b{i,j}, filter_len, 'svd');
     end
 end
 

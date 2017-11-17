@@ -5,8 +5,12 @@ function [ P ] = patternCFA( index )
 
 nb_color = 3;
 
-if index == 1; p = [3 2; 2 1];
-else           p = [3 2; 1 3]; end;
+switch(index)
+    case 1 
+        p = [3 2; 2 1];
+    otherwise
+        p = [3 2; 1 3];
+end;
 
 P = zeros(size(p,1), size(p,2), nb_color);
 for m = 1:nb_color

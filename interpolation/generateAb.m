@@ -21,17 +21,19 @@ if(isempty(row))
     return;
 end
 
-A = zeros(length(row).^2, filter_len.^2);
+A = zeros(length(row), filter_len.^2);
 
-for j = 1:length(col)
-    for i = 1:length(row)
-        tempA = raw(row(i)-offset:row(i)+offset, col(j)-offset:col(j)+offset, color);
-        A(sub2ind([length(row) length(col)], i, j),:) = tempA(:);
-    end
+for i = 1:length(row)   
+    tempA = raw(row(i)-offset:row(i)+offset, col(i)-offset:col(i)+offset, color);
+    A(i,:) = tempA(:);
 end
 
-tempb = image(row,col,color);
-b = tempb(:);
+
+b = zeros(length(row),1);
+for i=1:length(row)
+    b(i) = image(row(i),col(i),color);
+end
+
 
 end
 

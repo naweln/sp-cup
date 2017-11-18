@@ -30,7 +30,13 @@ for i = 1:length(row)
     A(i,:) = tempA(:);
 end
 
-b = image(sub2ind(size(image), row, col));
+if image==0; 
+    b = 0;
+    return; 
+end
+
+image_color = image(:,:,color);
+b = image_color(sub2ind(size(image), row, col));
 
 end
 

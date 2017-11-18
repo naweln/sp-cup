@@ -23,17 +23,14 @@ end
 
 A = zeros(length(row), filter_len.^2);
 
-for i = 1:length(row)   
+% TODO see if there's a more efficient way to create 
+% A as this loop is really slow (linear indexing?) 
+for i = 1:length(row)  
     tempA = raw(row(i)-offset:row(i)+offset, col(i)-offset:col(i)+offset, color);
     A(i,:) = tempA(:);
 end
 
-
-b = zeros(length(row),1);
-for i=1:length(row)
-    b(i) = image(row(i),col(i),color);
-end
-
+b = image(sub2ind(size(image), row, col));
 
 end
 

@@ -13,9 +13,9 @@ V = zeros(imsize); % to be cropped
 % image same for V except vertical gradient
 
 shiftU = [image(1+2:end,:,:); image(end-1:end,:,:)];
-shiftD = [image(1:2,:,:)    ; image(1:end-2,:,:)];
+shiftD = [image(1  :2  ,:,:); image(1:end-2  ,:,:)];
 shiftL = [image(:,1+2:end,:)  image(:,end-1:end,:)];
-shiftR = [image(:,1:2,:)      image(:,1:end-2,:)];
+shiftR = [image(:,1  :2  ,:)  image(:,1:end-2  ,:)];
 
 for i = 1:nb_color
    H(:,:,i) = abs(shiftU(:,:,i) + shiftD(:,:,i) - 2*image(:,:,i));

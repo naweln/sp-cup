@@ -21,9 +21,9 @@ region_index = 1; % considering hor grad region to start, TODO change
 
 % Matrices A, b cannot include whole image, first must take sub images.
 step = 150;
-sub_image   = image  (3:step, 3:step, :);
-sub_raw     = raw    (3:step, 3:step, :);
-sub_regions = regions(3:step, 3:step, :);
+sub_image   = image  (1:step, 1:step, :);
+sub_raw     = raw    (1:step, 1:step, :);
+sub_regions = regions(1:step, 1:step, :);
 
 A = cell(nb_color, nb_region);
 b = cell(nb_color, nb_region);
@@ -49,8 +49,32 @@ for i = 1:nb_color
 end
 
 %% Interpolation
-image_est_svd = interpolate(raw, regions, x_svd);
-image_est_ls  = interpolate(raw, regions, x_ls );
+% image_est_svd = interpolate(raw, regions, x_svd);
+% image_est_ls  = interpolate(raw, regions, x_ls );
+% interpolated image is b_est = Ax
+
+b_est_svd = cell(nb_color, nb_region);
+b_est_ls  = cell(nb_color, nb_region);
+A_whole   = cell(nb_color, nb_region);
+
+for i = 1:nb_color
+    for j = 1:nb_region
+        if(empty_flag(i,j) == 1); continue; end;
+        [A_whole{i,j}, ~] = generateAb(image, raw, regions, j, i, filter_len);
+        b_est_svd{i,j} = A_whole{i,j}*reshape(x_svd{i,j}, filter_len.^2, 1);
+        b_est_ls{i,j}  = A_whole{i,j}*reshape(x_ls{i,j},  filter_len.^2, 1);
+    end
+end
+
+
+%% to show that b_est is in fact interpolated image (MSE = 0)
+interp_svd_red = imfilter(raw(:,:,red), x_svd{1,3});
+
+[row, col] = find(regions(1+offset:end-offset,1+offset:end-offset,1) == 3);
+row = row+offset; col = col+offset;
+index = sub2ind(size(interp_svd_red), row, col);
+immse(interp_svd_red(index), b_est_svd{1,3})
+
 
 
 

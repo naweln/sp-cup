@@ -13,6 +13,7 @@ offset = (filter_len-1)/2;
 [row, col] = find(regions(1+offset:end-offset, 1+offset:end-offset, color) == region_index);
 row = row + offset;
 col = col + offset;
+index = sub2ind(size(regions), row, col);
 
 if(isempty(row))
     empty = 1;
@@ -21,25 +22,18 @@ if(isempty(row))
     return;
 end
 
-A = zeros(length(row), filter_len.^2);
+A = zeros(length(row), filter_len^2);
 
-% TODO see if there's a more efficient way to create 
-% A as this loop is really slow (linear indexing?) 
-for i = 1:length(row)  
-    tempA = raw(row(i)-offset:row(i)+offset, col(i)-offset:col(i)+offset, color);
-    A(i,:) = tempA(:);
+raw_color = raw(:,:,color);
+for i = 1:filter_len^2
+    A(:,i) = raw_color(index - (offset) + mod(i-1,7) - (offset-floor((i-1)/7))*size(raw,1));
 end
 
-if image==0; 
+if image==0 
     b = 0;
-    return; 
+else
+    image_color = image(:,:,color);
+    b = image_color(index);
 end
 
-image_color = image(:,:,color);
-b = image_color(sub2ind(size(image), row, col));
-
 end
-
-
-
-

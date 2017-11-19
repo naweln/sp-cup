@@ -14,7 +14,8 @@ A_whole = cell(nb_color, nb_region);
 for i = 1:nb_color
     for j = 1:nb_region
         if(empty_flag(i,j) == 1); continue; end;
-        % TODO generateAb really really slow for whole image
+        % TODO generateAb really really slow for whole image and only needs
+        % to be done once per image....
         [A_whole{i,j}, ~] = generateAb(0, raw, regions, j, i, filter_len);
         b_est{i,j} = A_whole{i,j}*reshape(filter{i,j}, filter_len.^2, 1);
     end

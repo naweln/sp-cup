@@ -44,14 +44,14 @@ for i = 1:nb_color
     for j = 1:nb_region
         if(empty_flag(i,j) == 1); continue; end;
         x_ls{i,j}  = solveAb(A{i,j}, b{i,j}, filter_len, 'ls');
-        x_svd{i,j} = solveAb(A{i,j}, b{i,j}, filter_len, 'svd');
+%       x_svd{i,j} = solveAb(A{i,j}, b{i,j}, filter_len, 'svd');
     end
 end
 
 %% Interpolation
 % interpolated image given by b_est = Ax
 
-image_interp = linInterp(raw, regions, empty_flag, x_svd);
+image_interp = linInterp(raw, regions, empty_flag, x_ls);
 % some problems with SVD because of small sample to compute coeff
 % but overall seems to work ok.
 image_trunc  = image(1+offset:end-offset, 1+offset:end-offset, :);

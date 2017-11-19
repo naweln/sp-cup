@@ -17,13 +17,12 @@ regions = generateRegions(image, threshold);
 raw = generateRaw(patternCFA(1), image); %TODO implement other CFA patterns
 filter_len = 7; % filter is of size filter_len x filter_len
 offset = (filter_len-1)/2;
-region_index = 1; % considering hor grad region to start, TODO change
-
-% Matrices A, b cannot include whole image, first must take sub images.
-step = 200;
-sub_image   = image  (2*step:3*step, 11*step:12*step, :);
-sub_raw     = raw    (2*step:3*step, 11*step:12*step, :);
-sub_regions = regions(2*step:3*step, 11*step:12*step, :);
+ 
+% Matrices A, b cannot include whole image for SVD, first must take sub images.
+step = 500;
+sub_image   = image  (2*step:3*step, 2*step:3*step, :);
+sub_raw     = raw    (2*step:3*step, 2*step:3*step, :);
+sub_regions = regions(2*step:3*step, 2*step:3*step, :);
 
 A = cell(nb_color, nb_region);
 b = cell(nb_color, nb_region);

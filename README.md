@@ -18,7 +18,7 @@ In essence they trained on a large data base of various camera models to identif
 
 In the ```camera-model-identification-with-cnn``` I have used their trained feature extractor to then train a SVM classifier based on our image data base.
 
-#### Technical detailse 
+#### Technical details 
 
 Your data file (i.e. the file containing the various samples from the different models) should be located on the sp-cup root folder.
 Two methods have been added to extend the classifier to the competition. 
@@ -48,3 +48,17 @@ We need to ask permission to use a modified version of the code since they state
 Redistribution: This code, in whole or in part, will not be further distributed, published, copied, or disseminated in any way or form whatsoever, whether for profit or not.
 
 If not, we will use a similar approach to train our own method from scratch, since the above code has shown to be very effective.
+
+Update: We have permission!!!!
+
+## interpolation
+
+This implementation is based on the following paper:
+
+Ashwin Swaminathan, Min Wu, and K. J. Ray Liu. 2007. Nonintrusive Component Forensics of Visual Sensors Using Output Images. Trans. Info. For. Sec. 2, 1 (March 2007), 91-106. [IEEE](http://ieeexplore.ieee.org/document/4100631/)
+
+This method focuses on finding the CFA pattern and estimating the interpolation coefficients by assuming a different linear interpolation algorithm is applied on the different regions (smooth, horizontal gradient, and vertical gradient) of the image. These estimated interpolation coefficients are found by minimizing the error between the estimated image and the original image. They can be used as "features" unique to the camera model and thus can be used to classify different camera models.
+
+### Technical details (more to come)
+
+Currently, the MATLAB script ```test_interpParam.m``` will result in an image ```image_interp``` which is an estimation of the original image using the found interpolation parameters. The calculated interpolation coefficients can be found in the variables ```x_ls``` and ```x_svd```.

@@ -26,10 +26,12 @@ A = zeros(length(row), filter_len^2);
 
 raw_color = raw(:,:,color);
 for i = 1:filter_len^2
-    A(:,i) = raw_color(index - (offset) + mod(i-1,7) - (offset-floor((i-1)/7))*size(raw,1));
+    A(:,i) = raw_color(index - offset + mod(i-1,filter_len) ...
+             - (offset-floor((i-1)/filter_len))*size(raw,1));
 end
+% check if right TODO
 
-if image==0 
+if image == 0 
     b = 0;
 else
     image_color = image(:,:,color);

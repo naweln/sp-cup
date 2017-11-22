@@ -59,6 +59,6 @@ Ashwin Swaminathan, Min Wu, and K. J. Ray Liu. 2007. Nonintrusive Component Fore
 
 This method focuses on finding the CFA pattern and estimating the interpolation coefficients by assuming a different linear interpolation algorithm is applied on the different regions (smooth, horizontal gradient, and vertical gradient) of the image. These estimated interpolation coefficients are found by minimizing the error between the estimated image and the original image. They can be used as "features" unique to the camera model and thus can be used to classify different camera models.
 
-### Technical details (more to come)
+#### Technical details (more to come)
 
 Currently, the MATLAB script ```test_interpParam.m``` will result in an image ```image_interp``` which is an estimation of the original image using the found interpolation parameters. The calculated interpolation coefficients can be found in the variables ```x_ls``` and ```x_svd```.

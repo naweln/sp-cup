@@ -32,29 +32,35 @@ end
 % where each row is a 3x3 block of raw sample. b interpolated corresponding
 % pixel, x interpolation coefficients.
 step = 20;
-filter_len = 3; % filter is of size 3x3
+filter_len = 7; % filter is of size 3x3
 offset = (filter_len-1)/2;
 % can add gaussian white noise to check robustness (LS does better than
 % SVD)
-% raw = raw + 8*randn(size(raw));
+%raw = raw + 8*randn(size(raw));
 raw_small = raw(1:step, 1:step, :);
 interp_small = image_interp(1:step, 1:step, :);
 width = size(raw_small,1);
 height = size(raw_small,2);
+regions = ones(size(raw_small));
 
-for color = 1:nb_color 
-    for col = 1+offset:height-offset
-        for row = 1+offset:width-offset
-            tempA = raw_small(row-offset:row+offset, col-offset:col+offset, color);
-            A((row-offset)+(step-2*offset)*(col-offset-1),:,color) = tempA(:);
-        end
-    end
+for i = 1:nb_color
+    [A(:,:,i),b(:,i),~] = generateAb(interp_small, raw_small, regions, 1, i, filter_len);
 end
 
-for color = 1:nb_color 
-   tempb = interp_small(1+offset:end-offset,1+offset:end-offset,color); 
-   b(:,color) = tempb(:);
-end
+
+% for color = 1:nb_color 
+%     for col = 1+offset:height-offset
+%         for row = 1+offset:width-offset
+%             tempA = raw_small(row-offset:row+offset, col-offset:col+offset, color);
+%             A((row-offset)+(step-2*offset)*(col-offset-1),:,color) = tempA(:);
+%         end
+%     end
+% end
+% 
+% for color = 1:nb_color 
+%    tempb = interp_small(1+offset:end-offset,1+offset:end-offset,color); 
+%    b(:,color) = tempb(:);
+% end
 
 % Minimal solution to equation using SVD
 for color = 1:nb_color

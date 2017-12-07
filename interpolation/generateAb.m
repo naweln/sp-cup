@@ -29,7 +29,6 @@ for i = 1:filter_len^2
     A(:,i) = raw_color(index - offset + mod(i-1,filter_len) ...
              - (offset-floor((i-1)/filter_len))*size(raw,1));
 end
-% check if right TODO
 
 if image == 0 
     b = 0;

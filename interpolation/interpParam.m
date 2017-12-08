@@ -27,8 +27,8 @@ for k = 1:p_space
 end
 
 min_index = find(MSE == min(MSE));
-x = x_p{min_index};
-p = patternCFA(min_index);
+x = x_p{min_index(1)};
+p = patternCFA(min_index(1));
 
 end
 

@@ -35,7 +35,7 @@ for i=1:numel(contents)
     cd([dataFolder '/' contents(i).name]);
     images = vertcat(dir('*.jpg'), dir('*.png'));
     cd(startFolder);
-    for j=1:numel(images)
+    for j=1:100%numel(images)
         image = double(imread([dataFolder '/' contents(i).name '/' images(j).name]));
         for k=1:nb_subimage
             name = images(j).name;

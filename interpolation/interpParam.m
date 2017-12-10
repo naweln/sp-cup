@@ -1,4 +1,4 @@
-function [ p, x ] = interpParam( image, row_range, column_range, threshold, filter_len, method )
+function [ p, x, MSE ] = interpParam( image, row_range, column_range, threshold, filter_len, method )
 %interpParam given an image, it returns the CFA pattern p, and the 
 %   estimated interpolation coefficients x th te at minimize error. The
 %   arguments row_range and column_range specify which sub image to take
@@ -30,9 +30,11 @@ min_index = find(MSE == min(MSE));
 if(~isempty(min_index))
     x = x_p{min_index(1)};
     p = patternCFA(min_index(1));
+    MSE = MSE(min_index(1));
 else
     x = x_p{1};
     p = patternCFA(1);
+    MSE = MSE(1);
 end
 
 end

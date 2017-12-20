@@ -46,16 +46,10 @@ for subdir, dirs, files in os.walk(rootdir):
 X_train = []
 X_eval = []
 
-flag = 0
 for X_model in X_acc:
     shuffle(X_model)
     split = int(np.floor(len(X_model) * 0.6))
-    cap = 0
-    if flag == 0:
-        cap = 90
-        flag = 1
-    X_train.append(X_model[:split - cap])
-
+    X_train.append(X_model[:split])
     X_eval.append(X_model[split:])
 
 index = 0

@@ -3,18 +3,12 @@
 [Competition Page](http://signalprocessingsociety.org/get-involved/signal-processing-cup)
 
 Team Members:
-
-Undergraduate - Thierry Bossy, Aditya Garga, Nawel Naas
-
-Graduate - Ignacio Alemàn
-
+Undergraduate - Thierry Bossy, Aditya Garga, Nawel Naas /
+Graduate - Ignacio Alemàn /
 Supervisor - Dr. Francesca De Simone
 
 
-To access the [registration page](https://www2.securecms.com/SPCup/SPCRegistration.asp) use the following information:
-
-Application ID: 25997
-
+To access the [registration page](https://www2.securecms.com/SPCup/SPCRegistration.asp) use the following information: Application ID: 25997,
 Access code: DF5AD4A9
 
 #### Note: All 3 undergrads need to get IEEE memberships in order to be able to participate!
